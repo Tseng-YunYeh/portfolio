@@ -1,0 +1,108 @@
+{
+  "cv": "pdfs/Tseng_YunYeh_CV_En.pdf",
+  "themes": [
+    {
+      "id": "web",
+      "title": "Web Development",
+      "projects": [
+        {
+          "title": "RSEQ Redesign",
+          "description": "A complete redesign of the RSEQ website focusing on user experience and modern aesthetics.",
+          "type": "web",
+          "link": "webs/RSEQ-redopage/index.html",
+          "images": ["webs/RSEQ-redopage/imgs/logo.png"], 
+          "technologies": ["HTML", "CSS", "JS"]
+        }
+      ]
+    },
+    {
+      "id": "video",
+      "title": "Video Production",
+      "projects": [
+        {
+          "title": "Robot Showcase",
+          "description": "A cinematic showcase of a robot model, demonstrating 3D rendering and video editing skills.",
+          "type": "video",
+          "src": "videos/robot.mp4"
+        },
+        {
+          "title": "Movie Trailer",
+          "description": "An exciting trailer cut for a fictional movie project.",
+          "type": "video",
+          "src": "videos/Trailer.mp4"
+        }
+      ]
+    },
+    {
+      "id": "design",
+      "title": "Graphic Design",
+      "projects": [
+        {
+          "title": "Les Gardiens Bleus",
+          "description": "Poster designs for 'Les Gardiens Bleus', exploring color theory and composition.",
+          "type": "image-gallery",
+          "images": [
+            "imgs/affiche_lesgardiensbleus.jpg",
+            "imgs/affiche_lesgardiensbleus2.jpg"
+          ]
+        },
+        {
+          "title": "Sunset Scenes",
+          "description": "A series of digital paintings capturing the mood of sunsets in different environments.",
+          "type": "image-gallery",
+          "images": [
+            "imgs/Sunset_scene1.png",
+            "imgs/Sunset_scene2.png",
+            "imgs/Sunset_scene3.png"
+          ]
+        },
+        {
+          "title": "Mysterious Forests",
+          "description": "Concept art for a fantasy forest environment.",
+          "type": "image-gallery",
+          "images": [
+            "imgs/Forets-mysterieux.jpg"
+          ]
+        },
+        {
+          "title": "One",
+          "description": "A unique digital art piece.",
+          "type": "image-gallery",
+          "images": [
+            "imgs/one.jpg"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "documents",
+      "title": "Reports & Presentations",
+      "projects": [
+        {
+          "title": "User Analysis",
+          "description": "In-depth analysis of user testing results.",
+          "type": "pdf",
+          "src": "pdfs/analyse-test-user.pdf"
+        },
+        {
+          "title": "Project Presentation",
+          "description": "Slides from the final project presentation.",
+          "type": "pdf",
+          "src": "pdfs/presentation_pdf.pdf"
+        },
+        {
+          "title": "Sufmer Report",
+          "description": "Technical report on the Sufmer project.",
+          "type": "pdf",
+          "src": "pdfs/sufmer.pdf"
+        },
+        {
+          "title": "Web Redo Presentation",
+          "description": "Presentation deck for the web redesign proposal.",
+          "type": "pdf",
+          "src": "pdfs/web-redo-presentation.pdf"
+        }
+      ]
+    }
+  ]
+}
