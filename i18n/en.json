@@ -32,7 +32,8 @@
         "title": "My Work",
         "subtitle": "A selection of my recent projects.",
         "filterAll": "All",
-        "clickToDownload": "Click to Download"
+        "clickToDownload": "Click to Download",
+        "viewLive": "View Live"
     },
     "contact": {
         "title": "Get In Touch",

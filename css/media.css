@@ -206,7 +206,8 @@
 
     /* Timeline adjustments for mobile */
     .timeline::after {
-        left: 31px;
+        left: 30px;
+        transform: none; /* Reset desktop transform */
     }
 
     .timeline-item {
@@ -216,7 +217,9 @@
     }
 
     .timeline-item::after {
-        left: 21px;
+        left: 31px;
+        right: auto; /* Reset desktop right */
+        transform: translateX(-50%); /* Center circle on the line */
     }
 
     .timeline-item:nth-child(even) {
@@ -224,7 +227,8 @@
     }
     
     .timeline-item:nth-child(even)::after {
-        left: 21px;
+        left: 31px;
+        transform: translateX(-50%); /* Center circle on the line */
     }
     
     /* Contact Form */

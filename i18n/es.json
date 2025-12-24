@@ -32,7 +32,8 @@
         "title": "Mi Trabajo",
         "subtitle": "Una selección de mis proyectos recientes.",
         "filterAll": "Todos",
-        "clickToDownload": "Clic para Descargar"
+        "clickToDownload": "Clic para Descargar",
+        "viewLive": "Ver en vivo"
     },
     "contact": {
         "title": "Contáctame",

@@ -32,7 +32,8 @@
         "title": "我的作品",
         "subtitle": "近期項目精選。",
         "filterAll": "全部",
-        "clickToDownload": "點擊下載"
+        "clickToDownload": "點擊下載",
+        "viewLive": "查看實時"
     },
     "contact": {
         "title": "聯繫方式",

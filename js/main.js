@@ -1,6 +1,108 @@
 let translations = {};
 
 document.addEventListener('DOMContentLoaded', () => {
+    // ===== Custom Cursor =====
+    const cursorDot = document.querySelector('.cursor-dot');
+    const cursorRing = document.querySelector('.cursor-ring');
+
+    if (cursorDot && cursorRing) {
+        // Get saved cursor position from previous page (if any)
+        const savedX = sessionStorage.getItem('cursorX');
+        const savedY = sessionStorage.getItem('cursorY');
+        
+        let mouseX = savedX ? parseFloat(savedX) : window.innerWidth / 2;
+        let mouseY = savedY ? parseFloat(savedY) : window.innerHeight / 2;
+        let ringX = mouseX, ringY = mouseY;
+
+        // Set initial position immediately
+        cursorDot.style.left = `${mouseX}px`;
+        cursorDot.style.top = `${mouseY}px`;
+        cursorRing.style.left = `${ringX}px`;
+        cursorRing.style.top = `${ringY}px`;
+
+        // Update mouse position
+        window.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+
+            // Save position for page transitions
+            sessionStorage.setItem('cursorX', mouseX);
+            sessionStorage.setItem('cursorY', mouseY);
+
+            // Dot follows instantly (centered with CSS transform)
+            cursorDot.style.left = `${mouseX}px`;
+            cursorDot.style.top = `${mouseY}px`;
+        });
+
+        // Smooth ring animation
+        function animateRing() {
+            ringX += (mouseX - ringX) * 0.12;
+            ringY += (mouseY - ringY) * 0.12;
+            cursorRing.style.left = `${ringX}px`;
+            cursorRing.style.top = `${ringY}px`;
+            requestAnimationFrame(animateRing);
+        }
+        animateRing();
+
+        // Hover effects on interactive elements
+        const hoverElements = document.querySelectorAll('a, button, .btn, .project-card, input, textarea, select');
+        hoverElements.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursorRing.classList.add('hovering');
+                cursorDot.classList.add('hovering');
+            });
+            el.addEventListener('mouseleave', () => {
+                cursorRing.classList.remove('hovering');
+                cursorDot.classList.remove('hovering');
+            });
+        });
+
+        // Click effects
+        window.addEventListener('mousedown', () => cursorRing.classList.add('clicking'));
+        window.addEventListener('mouseup', () => cursorRing.classList.remove('clicking'));
+    }
+
+    // Intro Loader Logic
+    const loader = document.getElementById('intro-loader');
+    
+    // Check if this is an internal navigation
+    const isInternalNav = sessionStorage.getItem('internalNav');
+
+    if (loader) {
+        if (isInternalNav) {
+            // If internal navigation, hide loader immediately
+            loader.style.display = 'none';
+            document.body.classList.remove('loading');
+            sessionStorage.removeItem('internalNav'); // Clear flag for next time (e.g. refresh)
+        } else {
+            // If refresh or first visit, show animation
+            document.body.classList.add('loading');
+            
+            // Wait for animation to finish (approx 2.5s total)
+            setTimeout(() => {
+                loader.classList.add('loader-hidden');
+                document.body.classList.remove('loading');
+                
+                // Remove from DOM after transition
+                loader.addEventListener('transitionend', () => {
+                    loader.remove();
+                });
+            }, 2500); 
+        }
+    }
+
+    // Add click listeners to internal links to set the flag
+    const internalLinks = document.querySelectorAll('a[href^="/"], a[href^="./"], a[href^="index.html"], a[href^="about.html"], a[href^="portfolio.html"], a[href^="contact.html"]');
+    
+    internalLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            // Only set flag if not opening in new tab
+            if (!e.ctrlKey && !e.metaKey && link.target !== '_blank') {
+                sessionStorage.setItem('internalNav', 'true');
+            }
+        });
+    });
+
     // Cookie Helpers
     function setCookie(name, value, days) {
         let expires = "";
@@ -415,7 +517,8 @@ function createProjectCard(project, lang) {
         card.classList.add('pdf-card');
     }
 
-    const linkHtml = project.link ? `<a href="${project.link}" target="_blank" class="btn secondary" style="padding: 5px 15px; font-size: 0.8rem;">View Live</a>` : '';
+    const viewLiveText = (translations.portfolio && translations.portfolio.viewLive) ? translations.portfolio.viewLive : 'View Live';
+    const linkHtml = project.link ? `<a href="${project.link}" target="_blank" class="btn secondary" style="padding: 5px 15px; font-size: 0.8rem;">${viewLiveText}</a>` : '';
     
     const title = project.title[lang] || project.title['en'];
     const description = project.description[lang] || project.description['en'];
