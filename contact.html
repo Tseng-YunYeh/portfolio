@@ -59,10 +59,10 @@
             <div class="line"></div>
         </div>
         <ul class="nav-links">
-            <li><a href="index.html" data-i18n="nav.home">Home</a></li>
-            <li><a href="about.html" data-i18n="nav.about">About</a></li>
-            <li><a href="portfolio.html" data-i18n="nav.portfolio">Portfolio</a></li>
-            <li><a href="contact.html" class="active" data-i18n="nav.contact">Contact</a></li>
+            <li><a href="index.html" data-i18n="nav.home" data-text="Home">Home</a></li>
+            <li><a href="about.html" data-i18n="nav.about" data-text="About">About</a></li>
+            <li><a href="portfolio.html" data-i18n="nav.portfolio" data-text="Portfolio">Portfolio</a></li>
+            <li><a href="contact.html" class="active" data-i18n="nav.contact" data-text="Contact">Contact</a></li>
             <li><button id="theme-toggle" class="theme-btn" aria-label="Toggle Dark Mode"><i class="fas fa-moon"></i></button></li>
             <li>
                 <div class="lang-dropdown desktop-only">
@@ -78,9 +78,66 @@
         </ul>
     </nav>
 
-    <section class="page-header">
-        <h1 data-i18n="contact.title">Get In Touch</h1>
-        <p data-i18n="contact.subtitle">Have a project in mind? Let's work together.</p>
+    <!-- CONTACT PAGE: Communication/Connection Theme -->
+    <section class="contact-hero-header">
+        <div class="wave-bg">
+            <svg class="wave-svg" viewBox="0 0 1440 320" preserveAspectRatio="none">
+                <path class="wave wave-1" d="M0,160L48,176C96,192,192,224,288,213.3C384,203,480,149,576,138.7C672,128,768,160,864,181.3C960,203,1056,213,1152,197.3C1248,181,1344,139,1392,117.3L1440,96L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z"></path>
+                <path class="wave wave-2" d="M0,64L48,80C96,96,192,128,288,128C384,128,480,96,576,90.7C672,85,768,107,864,128C960,149,1056,171,1152,165.3C1248,160,1344,128,1392,112L1440,96L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z"></path>
+            </svg>
+        </div>
+        
+        <!-- Floating Message Bubbles -->
+        <div class="floating-bubbles">
+            <div class="bubble bubble-1" data-hover-expand>
+                <i class="fas fa-comment"></i>
+            </div>
+            <div class="bubble bubble-2" data-hover-expand>
+                <i class="fas fa-envelope"></i>
+            </div>
+            <div class="bubble bubble-3" data-hover-expand>
+                <i class="fas fa-paper-plane"></i>
+            </div>
+            <div class="bubble bubble-4" data-hover-expand>
+                <i class="fas fa-heart"></i>
+            </div>
+            <div class="bubble bubble-5" data-hover-expand>
+                <i class="fas fa-handshake"></i>
+            </div>
+        </div>
+        
+        <div class="contact-hero-content">
+            <div class="connection-lines" id="connectionLines"></div>
+            
+            <div class="contact-title-area">
+                <div class="ping-dot"></div>
+                <h1 class="split-reveal" data-i18n="contact.title">Get In Touch</h1>
+                <p class="fade-up-text" data-i18n="contact.subtitle">Have a project in mind? Let's work together.</p>
+            </div>
+            
+            <!-- Interactive Social Icons with Magnetic Effect -->
+            <div class="magnetic-socials">
+                <a href="#" class="magnetic-icon" data-magnetic>
+                    <i class="fab fa-github"></i>
+                    <span class="icon-tooltip">GitHub</span>
+                </a>
+                <a href="#" class="magnetic-icon" data-magnetic>
+                    <i class="fab fa-linkedin"></i>
+                    <span class="icon-tooltip">LinkedIn</span>
+                </a>
+                <a href="#" class="magnetic-icon" data-magnetic>
+                    <i class="fab fa-twitter"></i>
+                    <span class="icon-tooltip">Twitter</span>
+                </a>
+                <a href="#" class="magnetic-icon" data-magnetic>
+                    <i class="fas fa-envelope"></i>
+                    <span class="icon-tooltip">Email</span>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Double-click easter egg -->
+        <div class="easter-egg-hint">Double-click anywhere!</div>
     </section>
 
     <section class="contact-container container">
@@ -130,6 +187,18 @@
     </section>
 
     <footer>
+        <div class="footer-bg-elements">
+            <div class="lightning-container" id="footer-lightning"></div>
+            <div class="floating-shape shape-footer-1"><i class="fas fa-terminal"></i></div>
+            <div class="floating-shape shape-footer-2"><i class="fas fa-rocket"></i></div>
+        </div>
+        
+        <!-- Corner Decorations -->
+        <div class="footer-corner corner-top-left"></div>
+        <div class="footer-corner corner-top-right"></div>
+        <div class="footer-corner corner-bottom-left"></div>
+        <div class="footer-corner corner-bottom-right"></div>
+        
         <div class="social-links">
             <a href="#"><i class="fab fa-github"></i></a>
             <a href="#"><i class="fab fa-linkedin"></i></a>

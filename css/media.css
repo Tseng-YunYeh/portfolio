@@ -92,6 +92,12 @@
         position: relative;
     }
 
+    /* Bold language dropdown text on mobile */
+    .mobile-only .lang-content a .char::before,
+    .mobile-only .lang-content a .char::after {
+        font-weight: 700;
+    }
+
     .hamburger {
         display: block;
         z-index: 2000;
@@ -187,6 +193,40 @@
         margin: 40px 0 30px;
     }
 
+    /* Enhanced Page Header - Tablet */
+    .page-header-enhanced {
+        min-height: 45vh;
+    }
+
+    .page-header-content h1 {
+        font-size: 2.8rem;
+    }
+
+    .header-icon {
+        width: 70px;
+        height: 70px;
+        font-size: 1.8rem;
+    }
+
+    .gradient-orb {
+        filter: blur(70px);
+    }
+
+    .gradient-orb.orb-1 {
+        width: 300px;
+        height: 300px;
+    }
+
+    .gradient-orb.orb-2 {
+        width: 220px;
+        height: 220px;
+    }
+
+    .gradient-orb.orb-3 {
+        width: 260px;
+        height: 260px;
+    }
+
     /* Layout - Single Column */
     .about-grid, 
     .contact-container {
@@ -202,6 +242,65 @@
     .project-grid, 
     .portfolio-grid {
         grid-template-columns: 1fr;
+    }
+
+    /* ===== ABOUT PAGE HEADER - Tablet ===== */
+    .about-hero-header {
+        min-height: 90vh;
+    }
+
+    .profile-hero-wrapper {
+        width: 220px;
+        height: 220px;
+    }
+
+    .profile-photo-container {
+        width: 160px;
+        height: 160px;
+    }
+
+    .glitch-text {
+        font-size: 2.8rem;
+    }
+
+    .hero-stats {
+        gap: 35px;
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+    }
+
+    /* ===== PORTFOLIO PAGE HEADER - Tablet ===== */
+    .portfolio-hero-header {
+        min-height: 55vh;
+    }
+
+    .tech-frame {
+        padding: 40px 50px;
+    }
+
+    .cyber-title {
+        font-size: 2.5rem;
+    }
+
+    .preview-card {
+        width: 85px;
+        height: 85px;
+        font-size: 1.6rem;
+    }
+
+    /* ===== CONTACT PAGE HEADER - Tablet ===== */
+    .contact-hero-header {
+        min-height: 55vh;
+    }
+
+    .contact-hero-content h1 {
+        font-size: 2.8rem;
+    }
+
+    .bubble-4, .bubble-5 {
+        display: none;
     }
 
     /* Timeline adjustments for mobile */
@@ -284,6 +383,145 @@
     .page-header h1 {
         font-size: 2.5rem;
     }
+
+    /* Enhanced Page Header - Small Phone */
+    .page-header-enhanced {
+        min-height: 40vh;
+    }
+
+    .page-header-content {
+        padding: 60px 20px;
+    }
+
+    .page-header-content h1 {
+        font-size: 2.2rem;
+    }
+
+    .header-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+    }
+
+    .gradient-orb {
+        filter: blur(60px);
+    }
+
+    .gradient-orb.orb-1 {
+        width: 200px;
+        height: 200px;
+    }
+
+    .gradient-orb.orb-2 {
+        width: 150px;
+        height: 150px;
+    }
+
+    .gradient-orb.orb-3 {
+        width: 180px;
+        height: 180px;
+    }
+
+    /* ===== ABOUT PAGE HEADER - Small Phone ===== */
+    .about-hero-header {
+        min-height: 100vh;
+        padding: 80px 15px 40px;
+    }
+
+    .profile-hero-wrapper {
+        width: 180px;
+        height: 180px;
+        margin-bottom: 30px;
+    }
+
+    .profile-photo-container {
+        width: 140px;
+        height: 140px;
+    }
+
+    .glitch-text {
+        font-size: 2rem;
+        letter-spacing: 2px;
+    }
+
+    .typewriter-text {
+        font-size: 0.95rem;
+    }
+
+    .hero-stats {
+        gap: 25px;
+        flex-wrap: wrap;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+    }
+
+    .floating-mini-profile {
+        width: 50px;
+        height: 50px;
+        top: 80px;
+        left: 15px;
+    }
+
+    /* ===== PORTFOLIO PAGE HEADER - Small Phone ===== */
+    .portfolio-hero-header {
+        min-height: 50vh;
+    }
+
+    .tech-frame {
+        padding: 30px 20px;
+    }
+
+    .cyber-title {
+        font-size: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .terminal-text {
+        font-size: 0.9rem;
+    }
+
+    .preview-cards-3d {
+        gap: 15px;
+    }
+
+    .preview-card {
+        width: 70px;
+        height: 70px;
+        font-size: 1.4rem;
+    }
+
+    /* ===== CONTACT PAGE HEADER - Small Phone ===== */
+    .contact-hero-header {
+        min-height: 50vh;
+    }
+
+    .contact-hero-content h1 {
+        font-size: 2.2rem;
+    }
+
+    .magnetic-socials {
+        gap: 15px;
+    }
+
+    .magnetic-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.2rem;
+    }
+
+    .bubble {
+        display: none;
+    }
+
+    .bubble-1, .bubble-2, .bubble-3 {
+        display: flex;
+    }
+
+    .bubble-1 { width: 50px; height: 50px; font-size: 1.2rem; }
+    .bubble-2 { width: 40px; height: 40px; font-size: 1rem; }
+    .bubble-3 { width: 60px; height: 60px; font-size: 1.4rem; }
     
     /* Adjust lightbox close button for small screens */
     #lightbox .close {

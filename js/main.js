@@ -62,6 +62,12 @@ document.addEventListener('DOMContentLoaded', () => {
         window.addEventListener('mouseup', () => cursorRing.classList.remove('clicking'));
     }
 
+    // Initialize nav links and language links split text on load
+    document.querySelectorAll('.nav-links a[data-i18n], .lang-content a').forEach(el => {
+        const text = el.getAttribute('data-text') || el.textContent.trim();
+        splitTextToSpans(el, text);
+    });
+
     // Intro Loader Logic
     const loader = document.getElementById('intro-loader');
     
@@ -128,14 +134,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // Theme Switcher
     const themeToggle = document.getElementById('theme-toggle');
     const icon = themeToggle ? themeToggle.querySelector('i') : null;
-    const savedTheme = getCookie('theme');
+    // Default to dark mode if no preference saved
+    const savedTheme = getCookie('theme') || 'dark';
 
-    if (savedTheme) {
-        document.documentElement.setAttribute('data-theme', savedTheme);
-        if (savedTheme === 'dark' && icon) {
-            icon.classList.remove('fa-moon');
-            icon.classList.add('fa-sun');
-        }
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    if (savedTheme === 'dark' && icon) {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+    } else if (savedTheme === 'light' && icon) {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
     }
 
     if (themeToggle) {
@@ -178,6 +186,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function splitTextToSpans(element, text) {
+        element.innerHTML = '';
+        element.setAttribute('aria-label', text); // Accessibility
+        [...text].forEach((char, index) => {
+            const span = document.createElement('span');
+            span.textContent = char === ' ' ? '\u00A0' : char;
+            span.className = 'char';
+            span.style.setProperty('--i', index);
+            span.setAttribute('data-char', char);
+            element.appendChild(span);
+        });
+    }
+
     function applyTranslations() {
         document.querySelectorAll('[data-i18n]').forEach(element => {
             const key = element.getAttribute('data-i18n');
@@ -188,7 +209,13 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             
             if (value) {
-                element.textContent = value;
+                // Check if it's a nav link or language link to apply the split effect
+                if (element.closest('.nav-links') || element.closest('.lang-content')) {
+                    splitTextToSpans(element, value);
+                } else {
+                    element.textContent = value;
+                }
+                // element.setAttribute('data-text', value); // No longer needed for nav links with new effect
             }
         });
 
@@ -246,7 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
     langOptions.forEach(option => {
         option.addEventListener('click', (e) => {
             e.stopPropagation();
-            const lang = e.target.getAttribute('data-lang');
+            const lang = e.currentTarget.getAttribute('data-lang');
             setLanguage(lang);
             closeAllDropdowns();
         });
@@ -290,6 +317,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     l.style.animation = '';
                 });
             });
+        });
+
+        // Reset menu state on resize (fix language button position issue)
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                navLinks.classList.remove('nav-active');
+                hamburger.classList.remove('toggle');
+                links.forEach(l => {
+                    l.style.animation = '';
+                });
+            }
         });
     }
 
@@ -626,6 +664,340 @@ function createLightbox() {
     });
 }
 
+// ===== Enhanced Page Header Particle Effect =====
+function initPageHeaderParticles() {
+    const containers = document.querySelectorAll('.particles-container');
+    
+    containers.forEach(container => {
+        // Create 30 particles
+        for (let i = 0; i < 30; i++) {
+            createParticle(container);
+        }
+    });
+}
+
+function createParticle(container) {
+    const particle = document.createElement('div');
+    particle.className = 'particle';
+    
+    // Random position
+    particle.style.left = Math.random() * 100 + '%';
+    particle.style.top = Math.random() * 100 + '%';
+    
+    // Random size (2-6px)
+    const size = Math.random() * 4 + 2;
+    particle.style.width = size + 'px';
+    particle.style.height = size + 'px';
+    
+    // Random animation duration (3-7s)
+    const duration = Math.random() * 4 + 3;
+    particle.style.animationDuration = duration + 's';
+    
+    // Random animation delay
+    particle.style.animationDelay = Math.random() * 4 + 's';
+    
+    // Random color variation
+    const colors = [
+        'rgba(99, 102, 241, 0.8)',   // indigo
+        'rgba(139, 92, 246, 0.8)',   // purple
+        'rgba(236, 72, 153, 0.8)',   // pink
+        'rgba(6, 182, 212, 0.8)',    // cyan
+        'rgba(255, 255, 255, 0.8)'   // white
+    ];
+    particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+    
+    container.appendChild(particle);
+    
+    // Animate particle movement
+    animateParticle(particle);
+}
+
+function animateParticle(particle) {
+    const moveX = (Math.random() - 0.5) * 100;
+    const moveY = (Math.random() - 0.5) * 100;
+    const duration = Math.random() * 5000 + 5000;
+    
+    particle.animate([
+        { transform: 'translate(0, 0)', opacity: 0.8 },
+        { transform: `translate(${moveX}px, ${moveY}px)`, opacity: 0.4 },
+        { transform: 'translate(0, 0)', opacity: 0.8 }
+    ], {
+        duration: duration,
+        iterations: Infinity,
+        easing: 'ease-in-out'
+    });
+}
+
+// Initialize particles on page load
+document.addEventListener('DOMContentLoaded', initPageHeaderParticles);
+
+
+// ============================================
+// ABOUT PAGE - Interactive Effects
+// ============================================
+function initAboutPageEffects() {
+    const aboutHeader = document.querySelector('.about-hero-header');
+    if (!aboutHeader) return;
+
+    // Animate Stats Counter on View
+    const statItems = document.querySelectorAll('.stat-item');
+    const animatedStats = new Set();
+    
+    const observerOptions = {
+        threshold: 0.5
+    };
+
+    const statsObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && !animatedStats.has(entry.target)) {
+                animatedStats.add(entry.target);
+                const countEl = entry.target.querySelector('.stat-number');
+                const target = parseInt(entry.target.dataset.count);
+                animateCounter(countEl, target);
+            }
+        });
+    }, observerOptions);
+
+    statItems.forEach(item => statsObserver.observe(item));
+
+    // Floating icons parallax effect on mouse move
+    const floatingIcons = document.querySelectorAll('.floating-icon');
+    if (floatingIcons.length > 0) {
+        aboutHeader.addEventListener('mousemove', (e) => {
+            const rect = aboutHeader.getBoundingClientRect();
+            const x = (e.clientX - rect.left) / rect.width - 0.5;
+            const y = (e.clientY - rect.top) / rect.height - 0.5;
+            
+            floatingIcons.forEach((icon, index) => {
+                const speed = (index + 1) * 10;
+                icon.style.transform = `translate(${x * speed}px, ${y * speed}px)`;
+            });
+        });
+
+        aboutHeader.addEventListener('mouseleave', () => {
+            floatingIcons.forEach(icon => {
+                icon.style.transform = '';
+            });
+        });
+    }
+}
+
+function animateCounter(element, target) {
+    let current = 0;
+    const increment = target / 50;
+    const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+            element.textContent = target;
+            clearInterval(timer);
+        } else {
+            element.textContent = Math.floor(current);
+        }
+    }, 30);
+}
+
+
+// ============================================
+// PORTFOLIO PAGE - Matrix Code Rain + Effects
+// ============================================
+function initPortfolioPageEffects() {
+    const portfolioHeader = document.querySelector('.portfolio-hero-header');
+    if (!portfolioHeader) return;
+
+    // Code Rain Effect
+    const canvas = document.getElementById('codeRainCanvas');
+    if (canvas) {
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = portfolioHeader.offsetHeight;
+
+        const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+        const charArray = chars.split('');
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+        const drops = [];
+
+        for (let i = 0; i < columns; i++) {
+            drops[i] = Math.random() * -100;
+        }
+
+        function drawCodeRain() {
+            ctx.fillStyle = 'rgba(10, 10, 15, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#38bdf8';
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const char = charArray[Math.floor(Math.random() * charArray.length)];
+                ctx.fillText(char, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        setInterval(drawCodeRain, 50);
+
+        // Resize handler
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = portfolioHeader.offsetHeight;
+        });
+    }
+
+    // Click Ripple Effect
+    portfolioHeader.addEventListener('click', (e) => {
+        const rippleArea = document.getElementById('rippleArea');
+        if (!rippleArea) return;
+
+        const ripple = document.createElement('div');
+        ripple.className = 'ripple';
+        
+        const rect = portfolioHeader.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        ripple.style.width = ripple.style.height = size + 'px';
+        ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+        ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+        
+        rippleArea.appendChild(ripple);
+        
+        setTimeout(() => ripple.remove(), 1000);
+    });
+
+    // 3D Tilt Effect on Preview Cards
+    const cards = document.querySelectorAll('.preview-card');
+    cards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = (y - centerY) / 5;
+            const rotateY = (centerX - x) / 5;
+            
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(20px)`;
+        });
+
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateZ(0)';
+        });
+    });
+}
+
+
+// ============================================
+// CONTACT PAGE - Interactive Effects
+// ============================================
+function initContactPageEffects() {
+    const contactHeader = document.querySelector('.contact-hero-header');
+    if (!contactHeader) return;
+
+    // Magnetic Effect on Social Icons
+    const magneticIcons = document.querySelectorAll('.magnetic-icon');
+    magneticIcons.forEach(icon => {
+        icon.addEventListener('mousemove', (e) => {
+            const rect = icon.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+            
+            icon.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px) scale(1.1)`;
+        });
+
+        icon.addEventListener('mouseleave', () => {
+            icon.style.transform = 'translate(0, 0) scale(1)';
+        });
+    });
+
+    // Double-click Easter Egg - Confetti burst
+    contactHeader.addEventListener('dblclick', (e) => {
+        createConfettiBurst(e.clientX, e.clientY);
+    });
+
+    // Bubble hover expand effect
+    const bubbles = document.querySelectorAll('.bubble');
+    bubbles.forEach(bubble => {
+        bubble.addEventListener('mouseenter', () => {
+            bubble.style.transform = 'scale(1.5)';
+            bubble.style.zIndex = '100';
+        });
+        
+        bubble.addEventListener('mouseleave', () => {
+            bubble.style.transform = '';
+            bubble.style.zIndex = '';
+        });
+
+        // Click bubble to create ripple
+        bubble.addEventListener('click', () => {
+            bubble.style.animation = 'none';
+            bubble.offsetHeight;
+            bubble.style.animation = 'bubblePop 0.5s ease-out';
+            
+            setTimeout(() => {
+                bubble.style.animation = 'bubbleFloat 6s ease-in-out infinite';
+            }, 500);
+        });
+    });
+}
+
+function createConfettiBurst(x, y) {
+    const colors = ['#6366f1', '#8b5cf6', '#ec4899', '#22c55e', '#38bdf8', '#f59e0b'];
+    
+    for (let i = 0; i < 30; i++) {
+        const confetti = document.createElement('div');
+        confetti.style.cssText = `
+            position: fixed;
+            width: ${Math.random() * 10 + 5}px;
+            height: ${Math.random() * 10 + 5}px;
+            background: ${colors[Math.floor(Math.random() * colors.length)]};
+            left: ${x}px;
+            top: ${y}px;
+            pointer-events: none;
+            z-index: 10000;
+            border-radius: ${Math.random() > 0.5 ? '50%' : '0'};
+        `;
+        document.body.appendChild(confetti);
+
+        const angle = (Math.PI * 2 * i) / 30;
+        const velocity = Math.random() * 200 + 100;
+        const vx = Math.cos(angle) * velocity;
+        const vy = Math.sin(angle) * velocity;
+
+        confetti.animate([
+            { transform: 'translate(0, 0) rotate(0deg)', opacity: 1 },
+            { transform: `translate(${vx}px, ${vy + 200}px) rotate(${Math.random() * 720}deg)`, opacity: 0 }
+        ], {
+            duration: 1000 + Math.random() * 500,
+            easing: 'cubic-bezier(0, 0.5, 0.5, 1)'
+        }).onfinish = () => confetti.remove();
+    }
+}
+
+// Add bubble pop animation
+const bubblePopStyle = document.createElement('style');
+bubblePopStyle.textContent = `
+    @keyframes bubblePop {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.5); opacity: 0.5; }
+        100% { transform: scale(0.8); opacity: 1; }
+    }
+`;
+document.head.appendChild(bubblePopStyle);
+
+
+// Initialize all page-specific effects
+document.addEventListener('DOMContentLoaded', () => {
+    initAboutPageEffects();
+    initPortfolioPageEffects();
+    initContactPageEffects();
+});
+
+
 // ===== GSAP Text Animations =====
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -778,3 +1150,222 @@ window.addEventListener('scroll', () => {
         }
     }
 });
+
+// GSAP Floating Shapes Animation
+function initFloatingShapes() {
+    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+    
+    // Hero floating shapes
+    gsap.utils.toArray('.hero .floating-shape').forEach((shape, i) => {
+        // Continuous floating animation
+        gsap.to(shape, {
+            y: -20 + (i * 5),
+            rotation: 10 - (i * 5),
+            duration: 3 + i,
+            yoyo: true,
+            repeat: -1,
+            ease: "sine.inOut"
+        });
+        
+        // Scroll-based parallax and scale
+        gsap.to(shape, {
+            yPercent: -100 - (i * 30),
+            scale: 0.5 + (i * 0.2),
+            opacity: 0.3,
+            ease: "none",
+            scrollTrigger: {
+                trigger: '.hero',
+                start: "top top",
+                end: "bottom top",
+                scrub: 1
+            }
+        });
+    });
+    
+    // Footer floating shapes
+    gsap.utils.toArray('footer .floating-shape').forEach((shape, i) => {
+        gsap.to(shape, {
+            y: -15,
+            rotation: 15,
+            duration: 4 + i,
+            yoyo: true,
+            repeat: -1,
+            ease: "sine.inOut"
+        });
+        
+        gsap.fromTo(shape, 
+            { scale: 0.5, opacity: 0 },
+            {
+                scale: 1,
+                opacity: 0.15,
+                scrollTrigger: {
+                    trigger: 'footer',
+                    start: "top 90%",
+                    end: "top 50%",
+                    scrub: 1
+                }
+            }
+        );
+    });
+    
+    // Geo stripes parallax
+    gsap.utils.toArray('.geo-stripe').forEach((stripe, i) => {
+        gsap.to(stripe, {
+            xPercent: 20 * (i % 2 === 0 ? 1 : -1),
+            ease: "none",
+            scrollTrigger: {
+                trigger: stripe.closest('.hero, footer'),
+                start: "top bottom",
+                end: "bottom top",
+                scrub: 2
+            }
+        });
+    });
+}
+
+// Initialize floating shapes on load
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(initFloatingShapes, 100);
+    initRandomThunder();
+});
+
+// Random Thunder Lightning Effect
+function initRandomThunder() {
+    const containers = document.querySelectorAll('.lightning-container');
+    if (!containers.length) return;
+    
+    const colors = ['', 'cyan', 'purple'];
+    
+    // Create SVG for each container
+    containers.forEach(container => {
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.classList.add('lightning-svg');
+        svg.style.width = '100%';
+        svg.style.height = '100%';
+        svg.style.position = 'absolute';
+        svg.style.top = '0';
+        svg.style.left = '0';
+        svg.style.overflow = 'visible';
+        container.appendChild(svg);
+        
+        // Generate jagged thunder path
+        function generateThunderPath(startX, startY, length, angle) {
+            let path = `M ${startX} ${startY}`;
+            let x = startX;
+            let y = startY;
+            const segments = 5 + Math.floor(Math.random() * 5);
+            const segmentLength = length / segments;
+            
+            for (let i = 0; i < segments; i++) {
+                // Add randomness to angle for jagged effect
+                const jitter = (Math.random() - 0.5) * 1.2;
+                const currentAngle = angle + jitter;
+                
+                x += Math.cos(currentAngle) * segmentLength;
+                y += Math.sin(currentAngle) * segmentLength;
+                
+                // Add slight horizontal jitter
+                x += (Math.random() - 0.5) * 25;
+                
+                path += ` L ${x} ${y}`;
+            }
+            
+            return { path, endX: x, endY: y };
+        }
+        
+        // Create branch paths
+        function generateBranch(startX, startY, length, angle) {
+            const branchLength = length * (0.3 + Math.random() * 0.4);
+            return generateThunderPath(startX, startY, branchLength, angle).path;
+        }
+        
+        // Create lightning bolt at random position
+        function createRandomThunderBolt() {
+            // Ensure SVG is still attached
+            if (!svg.parentNode) return;
+
+            const rect = container.getBoundingClientRect();
+            const containerWidth = rect.width || window.innerWidth;
+            const containerHeight = rect.height || 500;
+            
+            // Random start position (across full width, from top area)
+            const startX = Math.random() * containerWidth;
+            const startY = Math.random() * containerHeight * 0.3;
+            
+            // Main bolt going downward with slight angle
+            const mainAngle = Math.PI / 2 + (Math.random() - 0.5) * 0.6;
+            const mainLength = 120 + Math.random() * 200;
+            const mainBolt = generateThunderPath(startX, startY, mainLength, mainAngle);
+            
+            // Create main path element
+            const mainPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            mainPath.classList.add('lightning-path');
+            const colorClass = colors[Math.floor(Math.random() * colors.length)];
+            if (colorClass) mainPath.classList.add(colorClass);
+            mainPath.setAttribute('d', mainBolt.path);
+            svg.appendChild(mainPath);
+            
+            // Create branches
+            const branches = [];
+            const numBranches = 1 + Math.floor(Math.random() * 3);
+            for (let i = 0; i < numBranches; i++) {
+                const branchStartRatio = 0.2 + Math.random() * 0.6;
+                const branchX = startX + (mainBolt.endX - startX) * branchStartRatio;
+                const branchY = startY + (mainBolt.endY - startY) * branchStartRatio;
+                const branchAngle = mainAngle + (Math.random() - 0.5) * 1.5;
+                
+                const branchPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                branchPath.classList.add('lightning-path', 'branch');
+                if (colorClass) branchPath.classList.add(colorClass);
+                branchPath.setAttribute('d', generateBranch(branchX, branchY, mainLength, branchAngle));
+                svg.appendChild(branchPath);
+                branches.push(branchPath);
+            }
+            
+            // Animate with GSAP
+            if (typeof gsap !== 'undefined') {
+                const tl = gsap.timeline({
+                    onComplete: () => {
+                        if (mainPath.parentNode) mainPath.remove();
+                        branches.forEach(b => { if (b.parentNode) b.remove(); });
+                    }
+                });
+                
+                // Flash in
+                tl.to(mainPath, { opacity: 1, duration: 0.03 });
+                tl.to(branches, { opacity: 0.7, duration: 0.03 }, '<');
+                
+                // Flicker
+                tl.to(mainPath, { opacity: 0.3, duration: 0.05 });
+                tl.to(branches, { opacity: 0.2, duration: 0.05 }, '<');
+                tl.to(mainPath, { opacity: 1, duration: 0.03 });
+                tl.to(branches, { opacity: 0.6, duration: 0.03 }, '<');
+                
+                // Fade out
+                tl.to(mainPath, { opacity: 0, duration: 0.15 });
+                tl.to(branches, { opacity: 0, duration: 0.12 }, '<');
+            } else {
+                mainPath.style.opacity = 1;
+                branches.forEach(b => b.style.opacity = 0.6);
+                setTimeout(() => {
+                    if (mainPath.parentNode) mainPath.remove();
+                    branches.forEach(b => { if (b.parentNode) b.remove(); });
+                }, 200);
+            }
+        }
+        
+        // Spawn thunder at random intervals
+        function spawnThunder() {
+            // Check if container is still in DOM
+            if (!document.body.contains(container)) return;
+            
+            createRandomThunderBolt();
+            // Random interval between 2s and 4s
+            const nextInterval = 1000 + Math.random() * 1000;
+            setTimeout(spawnThunder, nextInterval);
+        }
+        
+        // Start immediately
+        spawnThunder();
+    });
+}
