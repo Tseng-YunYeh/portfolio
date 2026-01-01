@@ -1343,7 +1343,40 @@ function initFloatingShapes() {
 document.addEventListener('DOMContentLoaded', () => {
     setTimeout(initFloatingShapes, 100);
     initRandomThunder();
+    initModernHeroTilt();
 });
+
+// Modern Hero 3D Tilt Effect
+function initModernHeroTilt() {
+    const card = document.querySelector('.modern-hero-card');
+    
+    if (card) {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            // Calculate rotation (inverted for natural feel)
+            // Max rotation approx 10deg
+            const rotateX = ((y - centerY) / centerY) * -10; 
+            const rotateY = ((x - centerX) / centerX) * 10;
+            
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+        });
+        
+        card.addEventListener('mouseleave', () => {
+            card.style.transition = 'transform 0.5s ease';
+            card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+        });
+        
+        card.addEventListener('mouseenter', () => {
+            card.style.transition = 'none';
+        });
+    }
+}
 
 // Random Thunder Lightning Effect
 function initRandomThunder() {
@@ -1519,13 +1552,43 @@ document.addEventListener('DOMContentLoaded', () => {
     const footerSearchForm = document.getElementById('footer-search-form');
     const footerSearchInput = document.getElementById('footer-search');
     
+    function filterProjects(query) {
+        const projectCards = document.querySelectorAll('.project-card');
+        const searchLower = query.toLowerCase();
+        
+        projectCards.forEach(card => {
+            const title = card.querySelector('h3')?.textContent.toLowerCase() || '';
+            const description = card.querySelector('p')?.textContent.toLowerCase() || '';
+            const category = card.dataset.category?.toLowerCase() || '';
+            
+            if (title.includes(searchLower) || description.includes(searchLower) || category.includes(searchLower)) {
+                card.style.display = '';
+                card.style.animation = 'fadeInUp 0.5s ease forwards';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        // Refresh ScrollTrigger to fix footer visibility issues
+        if (typeof ScrollTrigger !== 'undefined') {
+            ScrollTrigger.refresh();
+        }
+    }
+
     if (footerSearchForm && footerSearchInput) {
         footerSearchForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const searchQuery = footerSearchInput.value.trim();
             if (searchQuery) {
-                // Navigate to portfolio page with search query
-                window.location.href = `portfolio.html?search=${encodeURIComponent(searchQuery)}`;
+                if (window.location.pathname.includes('portfolio.html')) {
+                    // Update URL without reload
+                    const newUrl = `${window.location.pathname}?search=${encodeURIComponent(searchQuery)}`;
+                    window.history.pushState({path: newUrl}, '', newUrl);
+                    filterProjects(searchQuery);
+                } else {
+                    // Navigate to portfolio page with search query
+                    window.location.href = `portfolio.html?search=${encodeURIComponent(searchQuery)}`;
+                }
             }
         });
     }
@@ -1538,21 +1601,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (searchQuery) {
             // Wait for portfolio to load then filter
             setTimeout(() => {
-                const projectCards = document.querySelectorAll('.project-card');
-                const searchLower = searchQuery.toLowerCase();
-                
-                projectCards.forEach(card => {
-                    const title = card.querySelector('h3')?.textContent.toLowerCase() || '';
-                    const description = card.querySelector('p')?.textContent.toLowerCase() || '';
-                    const category = card.dataset.category?.toLowerCase() || '';
-                    
-                    if (title.includes(searchLower) || description.includes(searchLower) || category.includes(searchLower)) {
-                        card.style.display = '';
-                        card.style.animation = 'fadeInUp 0.5s ease forwards';
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
+                filterProjects(searchQuery);
                 
                 // Fill in the footer search with the query
                 if (footerSearchInput) {
